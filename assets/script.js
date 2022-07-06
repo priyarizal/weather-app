@@ -40,6 +40,9 @@ function getGeoLocation(event) {
 
         var lat = myJson[0].lat
         var lon = myJson[0].lon
+        var cityname = myJson[0].name
+        var citynames = document.getElementById("citynames")
+        citynames.innerText = cityname
         // debugger
 
         const weatherDataresponse = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&appid=${weather.apiKey}`)
@@ -69,8 +72,15 @@ function getGeoLocation(event) {
             date.innerText = moment.unix(current.dt).format('MMMM Do YYYY')
 
 
-            var icon = document.getElementById('icon' + i)
-            icon.textContent = current.weather[0].icon
+
+            var icon = current.weather[0].icon
+
+            var icondiv = document.createElement('img')
+            icondiv.src = `http://openweathermap.org/img/w/${icon}.png`
+            date.insertAdjacentElement("afterend", icondiv)
+
+
+
             var temp = document.getElementById('temp' + i)
             temp.textContent = current.temp.day
             var humidity = document.getElementById('humidity' + i)
