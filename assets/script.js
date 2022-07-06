@@ -57,29 +57,31 @@ function getGeoLocation(event) {
 
             var current = weatherDataJson.daily[i]
 
-            var newTag = document.createElement('div');
+            // var newTag = document.createElement('div');
 
             console.log(weatherDataJson.daily[i])
             console.log(current.dt)
             console.log(current.humidity)
             console.log(current.temp.day)
             console.log(current.weather[0].icon)
-            debugger
+            // debugger
             var date = document.getElementById('date' + i)
-            date.innerText = current.dt
+            date.innerText = moment.unix(current.dt).format('MMMM Do YYYY')
 
-            var icon = document.getElementById('icon')
+
+            var icon = document.getElementById('icon' + i)
             icon.textContent = current.weather[0].icon
-            var temp = document.getElementById('temp')
+            var temp = document.getElementById('temp' + i)
             temp.textContent = current.temp.day
-            var humidity = document.createElement('p')
-            newTag.appendChild(date)
-            newTag.appendChild(temp)
-            newTag.appendChild(humidity)
-            newTag.appendChild(icon)
+            var humidity = document.getElementById('humidity' + i)
+            humidity.textContent = current.humidity
+            // newTag.appendChild(date)
+            // newTag.appendChild(temp)
+            // newTag.appendChild(humidity)
+            // newTag.appendChild(icon)
 
             // sunset.insertAdjacentElement("afterbegin", newTag).innerHTML = moment.unix(weatherDataJson.daily[i].dt).format('MMMM Do YYYY')
-            forecast.appendChild(newTag)
+            // forecast.appendChild(newTag)
 
         }
     }
