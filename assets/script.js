@@ -1,4 +1,7 @@
 
+var forecast = document.querySelector('#forecast')
+var latitude = document.getElementById('latitude')
+var longitude = document.getElementById('longitude')
 let weather = {
     "apiKey": "53affe54eecd2fabe74b83062f1b1669"
 }
@@ -20,16 +23,17 @@ function getGeoLocation(event) {
         // do something with myJson
         console.log(myJson)
 
-        debugger
+        // debugger
 
         var storedCities = JSON.parse(localStorage.cities);
+        console.log(storedCities)
         storedCities.push(inputValue)
+        console.log(storedCities)
         localStorage.cities = JSON.stringify(storedCities);
 
-        displayStoredCities()
+        // displayStoredCities()
 
-        var latitude = document.getElementById('latitude')
-        var longitude = document.getElementById('longitude')
+
 
         latitude.innerHTML = myJson[0].lat
         longitude.innerHTML = myJson[0].lon
@@ -38,7 +42,7 @@ function getGeoLocation(event) {
         var lon = myJson[0].lon
         // debugger
 
-        const weatherDataresponse = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${weather.apiKey}`)
+        const weatherDataresponse = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&appid=${weather.apiKey}`)
         const weatherDataJson = await weatherDataresponse.json();
 
         var sunrise = document.getElementById('sunrise')
@@ -46,17 +50,38 @@ function getGeoLocation(event) {
         var UVI = document.getElementById('uvi')
         console.log
 
+        // remove children elements
         sunrise.innerHTML = weatherDataJson.current.sunrise
         for (i = 0; i < 5; i++) {
             // debugger
 
-            var newTag = document.createElement('p');
-            console.log(weatherDataJson.daily[i])
+            var current = weatherDataJson.daily[i]
 
-            sunset.insertAdjacentElement("afterbegin", newTag).innerHTML = moment.unix(weatherDataJson.daily[i].dt).format('MMMM Do YYYY')
+            var newTag = document.createElement('div');
+
+            console.log(weatherDataJson.daily[i])
+            console.log(current.dt)
+            console.log(current.humidity)
+            console.log(current.temp.day)
+            console.log(current.weather[0].icon)
+            debugger
+            var date = document.getElementById('date' + i)
+            date.innerText = current.dt
+
+            var icon = document.getElementById('icon')
+            icon.textContent = current.weather[0].icon
+            var temp = document.getElementById('temp')
+            temp.textContent = current.temp.day
+            var humidity = document.createElement('p')
+            newTag.appendChild(date)
+            newTag.appendChild(temp)
+            newTag.appendChild(humidity)
+            newTag.appendChild(icon)
+
+            // sunset.insertAdjacentElement("afterbegin", newTag).innerHTML = moment.unix(weatherDataJson.daily[i].dt).format('MMMM Do YYYY')
+            forecast.appendChild(newTag)
 
         }
-
     }
     userAction()
 };
@@ -74,24 +99,15 @@ function displayStoredCities() {
     }
 };
 
-var key = "cities"
-var value = ["New York", "Harrisburg", "Philadelphia"]
+// var key = "cities"
+// var value = ["New York", "", ""]
 
 //cleaner way to do the setitem/getitem
-localStorage.cities = JSON.stringify(value);
-var storedCities = JSON.parse(localStorage.cities);
+// localStorage.cities = JSON.stringify(value);
+// var storedCities = JSON.parse(localStorage.cities);
 
 displayStoredCities()
 
 
 
-// function 
 
-
-// $.ajax({
-//     url: requestUrl,
-//     method: 'GET',
-//   }).then(function (response) {
-//     console.log('Ajax Reponse \n-------------');
-//     console.log(response);
-//   });
