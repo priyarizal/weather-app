@@ -1,7 +1,11 @@
-
+localStorage.cities = "[]"
 var forecast = document.querySelector('#forecast')
 var latitude = document.getElementById('latitude')
 var longitude = document.getElementById('longitude')
+var cityButtons = document.getElementById('cityButtons')
+var buttons = document.getElementById('buttons')
+
+
 let weather = {
     "apiKey": "53affe54eecd2fabe74b83062f1b1669"
 }
@@ -27,9 +31,24 @@ function getGeoLocation(event) {
 
         var storedCities = JSON.parse(localStorage.cities);
         console.log(storedCities)
-        storedCities.push(inputValue)
+        storedCities.unshift(inputValue);
+        console.log(storedCities)
         console.log(storedCities)
         localStorage.cities = JSON.stringify(storedCities);
+        // debugger
+        if (storedCities.length > 5) {
+            // the 6th item gotta go 
+            storedCities.pop()
+
+        }
+
+        var button = document.createElement('button');
+        buttons.insertAdjacentElement("afterend", button).innerText = storedCities.at(0)
+        console.log(button)
+
+        document.addEventListener("click", button)
+
+
 
         // displayStoredCities()
 
@@ -53,7 +72,6 @@ function getGeoLocation(event) {
         var UVI = document.getElementById('uvi')
         console.log
 
-        // remove children elements
         sunrise.innerHTML = weatherDataJson.current.sunrise
         for (i = 0; i < 5; i++) {
             // debugger
@@ -71,13 +89,21 @@ function getGeoLocation(event) {
             var date = document.getElementById('date' + i)
             date.innerText = moment.unix(current.dt).format('MMMM Do YYYY')
 
-
-
             var icon = current.weather[0].icon
 
-            var icondiv = document.createElement('img')
-            icondiv.src = `http://openweathermap.org/img/w/${icon}.png`
-            date.insertAdjacentElement("afterend", icondiv)
+            // debugger
+
+            var iconDiv = document.getElementById('icon' + i)
+
+            if (iconDiv) {
+                iconDiv.src = `http://openweathermap.org/img/w/${icon}.png`
+            } else {
+                iconDiv = document.createElement('img')
+                iconDiv.id = "icon" + i
+                iconDiv.src = `http://openweathermap.org/img/w/${icon}.png`
+                date.insertAdjacentElement("afterend", iconDiv)
+            }
+
 
 
 
@@ -98,18 +124,9 @@ function getGeoLocation(event) {
     userAction()
 };
 
-var cityButtons = document.getElementById('cityButtons')
-var buttons = document.getElementById('buttons')
 
-function displayStoredCities() {
-    var storedCities = JSON.parse(localStorage.cities);
 
-    for (i = 0; i < storedCities.length; i++) {
-        var button = document.createElement('button');
-        buttons.insertAdjacentElement("afterend", button).innerText = storedCities[i]
 
-    }
-};
 
 // var key = "cities"
 // var value = ["New York", "", ""]
@@ -118,7 +135,7 @@ function displayStoredCities() {
 // localStorage.cities = JSON.stringify(value);
 // var storedCities = JSON.parse(localStorage.cities);
 
-displayStoredCities()
+
 
 
 
