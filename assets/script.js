@@ -30,7 +30,7 @@ function getWeatherForCity(cityName) {
 
 
     const userAction = async (inputValue) => {
-        const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${inputValue},,US&appid=${weather.apiKey}`)
+        const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${inputValue},,US&appid=${weather.apiKey}`)
         const myJson = await response.json(); //extract JSON from the http response
         // do something with myJson
         console.log(myJson)
