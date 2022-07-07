@@ -1,7 +1,7 @@
 localStorage.cities = "[]"
 var forecast = document.querySelector('#forecast')
-var latitude = document.getElementById('latitude')
-var longitude = document.getElementById('longitude')
+// var latitude = document.getElementById('latitude')
+// var longitude = document.getElementById('longitude')
 var cityButtons = document.getElementById('cityButtons')
 var buttons = document.getElementById('buttons')
 
@@ -13,15 +13,23 @@ let weather = {
 
 var form = document.getElementById("form")
 
-form.addEventListener("submit", getGeoLocation)
+form.addEventListener("submit", getWeather)
 
-function getGeoLocation(event) {
+function getWeather(event) {
     event.preventDefault()
 
-    console.log(event.target[0].value)
-
     const inputValue = event.target[0].value
-    const userAction = async () => {
+
+    getWeatherForCity(inputValue)
+};
+
+
+function getWeatherForCity(cityName) {
+
+    // console.log(event.target[0].value)
+
+
+    const userAction = async (inputValue) => {
         const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${inputValue},,US&appid=${weather.apiKey}`)
         const myJson = await response.json(); //extract JSON from the http response
         // do something with myJson
@@ -31,10 +39,28 @@ function getGeoLocation(event) {
 
         var storedCities = JSON.parse(localStorage.cities);
         console.log(storedCities)
-        storedCities.unshift(inputValue);
-        console.log(storedCities)
-        console.log(storedCities)
-        localStorage.cities = JSON.stringify(storedCities);
+
+        if (storedCities.indexOf(inputValue) === -1) {
+
+            //add new item to the front of the array
+            storedCities.unshift(inputValue);
+
+            // put it back into local storage
+            localStorage.cities = JSON.stringify(storedCities);
+
+            //create a new button for the new item
+            var button = document.createElement('button');
+
+            //display the new button under buttons which is in html
+            buttons.insertAdjacentElement("afterend", button).innerText = storedCities.at(0)
+
+            button.onclick = function () {
+                userAction(storedCities.at(0))
+                document.getElementById('searchbar').value = storedCities.at(0)
+            }
+
+        }
+
         // debugger
         if (storedCities.length > 5) {
             // the 6th item gotta go 
@@ -42,38 +68,53 @@ function getGeoLocation(event) {
 
         }
 
-        var button = document.createElement('button');
-        buttons.insertAdjacentElement("afterend", button).innerText = storedCities.at(0)
-        console.log(button)
 
-        document.addEventListener("click", button)
-
-
-
-        // displayStoredCities()
-
-
-
-        latitude.innerHTML = myJson[0].lat
-        longitude.innerHTML = myJson[0].lon
+        // latitude.innerHTML = myJson[0].lat
+        // longitude.innerHTML = myJson[0].lon
 
         var lat = myJson[0].lat
         var lon = myJson[0].lon
         var cityname = myJson[0].name
-        var citynames = document.getElementById("citynames")
-        citynames.innerText = cityname
+
+
         // debugger
 
         const weatherDataresponse = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&appid=${weather.apiKey}`)
         const weatherDataJson = await weatherDataresponse.json();
 
+        var citynames = document.getElementById("citynames")
+        citynames.innerText = cityname + "(" + moment.unix(weatherDataJson.current.dt).format('MMMM Do') + ")"
+
+        // document.getElementById("date").innerText = moment.unix(weatherDataJson.current.dt).format('MMMM Do')
+
         var sunrise = document.getElementById('sunrise')
         var sunset = document.getElementById('sunset')
         var UVI = document.getElementById('uvi')
-        console.log
+        var uvi_color = document.getElementById('uvi-color')
+        var wind_speed = document.getElementById('wind-speed')
+        var temp = document.getElementById('temp22')
+        var humidity = document.getElementById('humidity22')
 
-        sunrise.innerHTML = weatherDataJson.current.sunrise
-        for (i = 0; i < 5; i++) {
+        debugger
+
+        temp.innerHTML = weatherDataJson.current.temp
+        humidity.innerHTML = weatherDataJson.current.humidity
+        sunrise.innerHTML = moment.unix(weatherDataJson.current.sunrise).format('h:mm:ss a')
+        sunset.innerHTML = moment.unix(weatherDataJson.current.sunset).format('h:mm:ss a')
+        UVI.innerHTML = weatherDataJson.current.uvi
+        uvi_color.style.color = "white"
+        if (weatherDataJson.current.uvi <= 2) {
+            uvi_color.style.backgroundColor = "green"
+
+        } else if (weatherDataJson.current.uvi <= 7) {
+            uvi_color.style.backgroundColor = "yellow"
+        } else {
+            uvi_color.style.backgroundColor = "red"
+        }
+        wind_speed.innerHTML = weatherDataJson.current.wind_speed
+
+
+        for (i = 2; i < 7; i++) {
             // debugger
 
             var current = weatherDataJson.daily[i]
@@ -86,20 +127,20 @@ function getGeoLocation(event) {
             console.log(current.temp.day)
             console.log(current.weather[0].icon)
             // debugger
-            var date = document.getElementById('date' + i)
+            var date = document.getElementById('date' + (i - 2))
             date.innerText = moment.unix(current.dt).format('MMMM Do YYYY')
 
             var icon = current.weather[0].icon
 
             // debugger
 
-            var iconDiv = document.getElementById('icon' + i)
+            var iconDiv = document.getElementById('icon' + (i - 2))
 
             if (iconDiv) {
                 iconDiv.src = `http://openweathermap.org/img/w/${icon}.png`
             } else {
                 iconDiv = document.createElement('img')
-                iconDiv.id = "icon" + i
+                iconDiv.id = "icon" + (i - 2)
                 iconDiv.src = `http://openweathermap.org/img/w/${icon}.png`
                 date.insertAdjacentElement("afterend", iconDiv)
             }
@@ -107,9 +148,9 @@ function getGeoLocation(event) {
 
 
 
-            var temp = document.getElementById('temp' + i)
+            var temp = document.getElementById('temp' + (i - 2))
             temp.textContent = current.temp.day
-            var humidity = document.getElementById('humidity' + i)
+            var humidity = document.getElementById('humidity' + (i - 2))
             humidity.textContent = current.humidity
             // newTag.appendChild(date)
             // newTag.appendChild(temp)
@@ -121,8 +162,9 @@ function getGeoLocation(event) {
 
         }
     }
-    userAction()
-};
+    userAction(cityName)
+}
+
 
 
 
