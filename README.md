@@ -8,48 +8,42 @@ This is a weather dashboard created for users to check the temperature, humidity
 - HTML
 - CSS
 - JavaScript
-- Jquery
-- Moment.js
+- OpenWeather API to retrieve weather data
+- localStorage to store persistent data
+
 
 # Deployed Link and URL
 
-- https://priyarizal.github.io/weekly-planning/
-- https://github.com/priyarizal/weekly-planning
+- https://priyarizal.github.io/weather-app/
+- https://github.com/priyarizal/weather-app
 
 # Significant Code Snippets
 
 LocalStorage
 
-````$('.saveBtn').on('click', function(event) {
+````
+    const userAction = async (inputValue) => {
+        const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${inputValue},,US&appid=${weather.apiKey}`)
+        const myJson = await response.json(); //extract JSON from the http response
+        // do something with myJson
+        console.log(myJson)
 
-    var key =$(this).siblings("textarea").attr("id")
-    var value =$(this).siblings("textarea").val()
-
-    localStorage.setItem(key, value);
-
-```$('#9').val(localStorage.getItem('9'));
-// $('#10').val(localStorage.getItem('10'));
-
-```$("textarea").each(function() {
- ```$(this).val(localStorage.getItem($(this).attr("id")))
 
 ````
 
 # Screen Shots for Design Highlight
 
-![dailycalender](./assets/1.png)
-![dailycalender](./assets/2.png)
+![weather-app](./assets/1.png)
 
 # Gif for Demoing Functionality
 
-![dailycalender](./assets/Work%20Day%20Scheduler.gif)
+![weather-app](./assets/gif.gif)
 
 # Contributors
 
 - UCB bootcamp instructor : Jerome Channete
 
-- Sean New (tutor)
-- Jehyun Jung (tutor)
+- Divesh Rizal
 
 # Contact Me
 
